@@ -1,0 +1,47 @@
+
+create table game (
+game_id int NOT NULL,
+nfl_week int,
+game_date date,
+road_team varchar(20),
+home_team varchar(20),
+outdoor_game char,
+CONSTRAINT GAME_ID_PK PRIMARY KEY (game_id)
+);
+
+
+CREATE SEQUENCE GAME_ID_SEQ MINVALUE 1 MAXVALUE 99999999999 INCREMENT BY 1 START WITH 1 CACHE 10 NOORDER NOCYCLE ;
+
+--New Trigger for PK
+create or replace
+TRIGGER REF_GAME_ID_PK_TRIG BEFORE INSERT OR UPDATE ON game
+	FOR EACH ROW
+	WHEN (new.game_id IS NULL)
+	BEGIN
+	  IF INSERTING THEN
+	    SELECT  GAME_ID_SEQ.NEXTVAL INTO :new.game_id FROM DUAL;
+	  END IF;
+	END;
+
+
+insert into game (nfl_week, game_date, road_team, home_team, outdoor_game) values (4,to_date('2017-09-28','yyyy-mm-dd'),'BEARS','PACKERS', 'T');
+insert into game (nfl_week, game_date, road_team, home_team, outdoor_game) values (4,to_date('2017-10-01','yyyy-mm-dd'),'LIONS','VIKINGS', 'F');
+insert into game (nfl_week, game_date, road_team, home_team, outdoor_game) values (5,to_date('2017-10-09','yyyy-mm-dd'),'VIKINGS','BEARS', 'T');
+insert into game (nfl_week, game_date, road_team, home_team, outdoor_game) values (6,to_date('2017-10-15','yyyy-mm-dd'),'PACKERS','VIKINGS', 'F');
+insert into game (nfl_week, game_date, road_team, home_team, outdoor_game) values (9,to_date('2017-11-06','yyyy-mm-dd'),'LIONS','PACKERS', 'T');
+insert into game (nfl_week, game_date, road_team, home_team, outdoor_game) values (10,to_date('2017-11-12','yyyy-mm-dd'),'PACKERS','BEARS', 'T');
+insert into game (nfl_week, game_date, road_team, home_team, outdoor_game) values (11,to_date('2017-11-19','yyyy-mm-dd'),'LIONS','BEARS', 'T');
+insert into game (nfl_week, game_date, road_team, home_team, outdoor_game) values (12,to_date('2017-11-23','yyyy-mm-dd'),'VIKINGS','LIONS', 'F');
+insert into game (nfl_week, game_date, road_team, home_team, outdoor_game) values (15,to_date('2017-12-16','yyyy-mm-dd'),'BEARS','LIONS', 'F');
+insert into game (nfl_week, game_date, road_team, home_team, outdoor_game) values (16,to_date('2017-12-23','yyyy-mm-dd'),'VIKINGS','PACKERS', 'T');
+insert into game (nfl_week, game_date, road_team, home_team, outdoor_game) values (17,to_date('2017-12-31','yyyy-mm-dd'),'PACKERS','LIONS', 'F');
+insert into game (nfl_week, game_date, road_team, home_team, outdoor_game) values (17,to_date('2017-12-31','yyyy-mm-dd'),'BEARS','VIKINGS', 'F');
+
+
+select * from game;
+
+
+drop trigger REF_GAME_ID_PK_TRIG;
+drop sequence GAME_ID_SEQ;
+drop table game cascade constraints;
+
